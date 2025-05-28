@@ -1,10 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-// Get today's date in ISO format
-const today = new Date().toISOString().split("T")[0]
-
-// Mock booking data with today's dates
+// Mock booking data with fixed dates
 const mockBookings = [
+  // Today's bookings
   {
     id: 548,
     roomId: 1,
@@ -21,8 +19,8 @@ const mockBookings = [
       birthDate: "1995-09-06T00:00:00.000Z",
       Healthcard: "ontario-8547961250-AB",
     },
-    startTimeStamp: `${today}T13:00:00Z`,
-    endTimeStamp: `${today}T13:29:00Z`,
+    startTimeStamp: "2025-05-28T13:00:00Z",
+    endTimeStamp: "2025-05-28T13:29:00Z",
     service: { service: "Elbow (R)" },
     operator: { name: "Blow, Joe" },
     bookingReference: "530",
@@ -43,8 +41,8 @@ const mockBookings = [
       birthDate: "1995-09-06T00:00:00.000Z",
       Healthcard: "ontario-8547961250-AB",
     },
-    startTimeStamp: `${today}T15:00:00Z`,
-    endTimeStamp: `${today}T15:29:00Z`,
+    startTimeStamp: "2025-05-28T15:00:00Z",
+    endTimeStamp: "2025-05-28T15:29:00Z",
     service: { service: "Knee (L)" },
     operator: { name: "Smith, Mary" },
     bookingReference: "531",
@@ -65,11 +63,192 @@ const mockBookings = [
       birthDate: "1980-03-15T00:00:00.000Z",
       Healthcard: "ontario-1234567890-CD",
     },
-    startTimeStamp: `${today}T10:00:00Z`,
-    endTimeStamp: `${today}T10:29:00Z`,
+    startTimeStamp: "2025-05-28T10:00:00Z",
+    endTimeStamp: "2025-05-28T10:29:00Z",
     service: { service: "Chest X-Ray" },
     operator: { name: "Johnson, Bob" },
     bookingReference: "123",
+  },
+  // Tomorrow (May 29)
+  {
+    id: 551,
+    roomId: 3,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Jane",
+      lastName: "Doe",
+      phoneNumber: "+14587458796",
+      birthDate: "1995-09-06T00:00:00.000Z",
+      Healthcard: "ontario-8547961250-AB",
+    },
+    startTimeStamp: "2025-05-29T09:30:00Z",
+    endTimeStamp: "2025-05-29T10:00:00Z",
+    service: { service: "MRI - Shoulder" },
+    operator: { name: "Williams, Sarah" },
+    bookingReference: "532",
+  },
+  {
+    id: 552,
+    roomId: 2,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics East",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "John",
+      lastName: "Smith",
+      phoneNumber: "+14161234567",
+      birthDate: "1980-03-15T00:00:00.000Z",
+      Healthcard: "ontario-1234567890-CD",
+    },
+    startTimeStamp: "2025-05-29T14:15:00Z",
+    endTimeStamp: "2025-05-29T14:45:00Z",
+    service: { service: "Ultrasound - Abdomen" },
+    operator: { name: "Garcia, Carlos" },
+    bookingReference: "124",
+  },
+  // May 30 (Friday)
+  {
+    id: 553,
+    roomId: 1,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Jane",
+      lastName: "Doe",
+      phoneNumber: "+14587458796",
+      birthDate: "1995-09-06T00:00:00.000Z",
+      Healthcard: "ontario-8547961250-AB",
+    },
+    startTimeStamp: "2025-05-30T11:00:00Z",
+    endTimeStamp: "2025-05-30T11:30:00Z",
+    service: { service: "CT Scan - Head" },
+    operator: { name: "Thompson, Lisa" },
+    bookingReference: "533",
+  },
+  {
+    id: 554,
+    roomId: 4,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics West",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Michael",
+      lastName: "Johnson",
+      phoneNumber: "+14169876543",
+      birthDate: "1975-11-22T00:00:00.000Z",
+      Healthcard: "ontario-9876543210-EF",
+    },
+    startTimeStamp: "2025-05-30T16:00:00Z",
+    endTimeStamp: "2025-05-30T16:30:00Z",
+    service: { service: "X-Ray - Ankle" },
+    operator: { name: "Brown, David" },
+    bookingReference: "125",
+  },
+  // May 31 (Saturday)
+  {
+    id: 555,
+    roomId: 2,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Michael",
+      lastName: "Johnson",
+      phoneNumber: "+14169876543",
+      birthDate: "1975-11-22T00:00:00.000Z",
+      Healthcard: "ontario-9876543210-EF",
+    },
+    startTimeStamp: "2025-05-31T10:30:00Z",
+    endTimeStamp: "2025-05-31T11:00:00Z",
+    service: { service: "Mammogram" },
+    operator: { name: "Wilson, Emma" },
+    bookingReference: "126",
+  },
+  // June 1 (Sunday)
+  {
+    id: 556,
+    roomId: 3,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics North",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Sarah",
+      lastName: "Williams",
+      phoneNumber: "+14165551234",
+      birthDate: "1988-07-14T00:00:00.000Z",
+      Healthcard: "ontario-5551234567-GH",
+    },
+    startTimeStamp: "2025-06-01T13:45:00Z",
+    endTimeStamp: "2025-06-01T14:15:00Z",
+    service: { service: "Bone Density Scan" },
+    operator: { name: "Miller, James" },
+    bookingReference: "127",
+  },
+  // June 2 (Monday)
+  {
+    id: 557,
+    roomId: 1,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics East",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Sarah",
+      lastName: "Williams",
+      phoneNumber: "+14165551234",
+      birthDate: "1988-07-14T00:00:00.000Z",
+      Healthcard: "ontario-5551234567-GH",
+    },
+    startTimeStamp: "2025-06-02T09:00:00Z",
+    endTimeStamp: "2025-06-02T09:30:00Z",
+    service: { service: "MRI - Knee" },
+    operator: { name: "Davis, Robert" },
+    bookingReference: "128",
+  },
+  {
+    id: 558,
+    roomId: 2,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "John",
+      lastName: "Smith",
+      phoneNumber: "+14161234567",
+      birthDate: "1980-03-15T00:00:00.000Z",
+      Healthcard: "ontario-1234567890-CD",
+    },
+    startTimeStamp: "2025-06-02T15:30:00Z",
+    endTimeStamp: "2025-06-02T16:00:00Z",
+    service: { service: "Ultrasound - Thyroid" },
+    operator: { name: "Martinez, Ana" },
+    bookingReference: "129",
   },
 ]
 
