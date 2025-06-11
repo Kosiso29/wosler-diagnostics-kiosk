@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 
 // Mock booking data with fixed dates
 const mockBookings = [
-  // Today's bookings
+  // Today's bookings (June 11, 2025)
   {
     id: 548,
     roomId: 1,
@@ -19,8 +19,8 @@ const mockBookings = [
       birthDate: "1995-09-06T00:00:00.000Z",
       Healthcard: "ontario-8547961250-AB",
     },
-    startTimeStamp: "2025-05-28T13:00:00Z",
-    endTimeStamp: "2025-05-28T13:29:00Z",
+    startTimeStamp: "2025-06-11T13:00:00Z",
+    endTimeStamp: "2025-06-11T13:29:00Z",
     service: { service: "Elbow (R)" },
     operator: { name: "Blow, Joe" },
     bookingReference: "530",
@@ -41,8 +41,8 @@ const mockBookings = [
       birthDate: "1995-09-06T00:00:00.000Z",
       Healthcard: "ontario-8547961250-AB",
     },
-    startTimeStamp: "2025-05-28T15:00:00Z",
-    endTimeStamp: "2025-05-28T15:29:00Z",
+    startTimeStamp: "2025-06-11T15:00:00Z",
+    endTimeStamp: "2025-06-11T15:29:00Z",
     service: { service: "Knee (L)" },
     operator: { name: "Smith, Mary" },
     bookingReference: "531",
@@ -63,13 +63,13 @@ const mockBookings = [
       birthDate: "1980-03-15T00:00:00.000Z",
       Healthcard: "ontario-1234567890-CD",
     },
-    startTimeStamp: "2025-05-28T10:00:00Z",
-    endTimeStamp: "2025-05-28T10:29:00Z",
+    startTimeStamp: "2025-06-11T10:00:00Z",
+    endTimeStamp: "2025-06-11T10:29:00Z",
     service: { service: "Chest X-Ray" },
     operator: { name: "Johnson, Bob" },
     bookingReference: "123",
   },
-  // Tomorrow (May 29)
+  // Tomorrow (June 12, 2025)
   {
     id: 551,
     roomId: 3,
@@ -86,8 +86,8 @@ const mockBookings = [
       birthDate: "1995-09-06T00:00:00.000Z",
       Healthcard: "ontario-8547961250-AB",
     },
-    startTimeStamp: "2025-05-29T09:30:00Z",
-    endTimeStamp: "2025-05-29T10:00:00Z",
+    startTimeStamp: "2025-06-12T09:30:00Z",
+    endTimeStamp: "2025-06-12T10:00:00Z",
     service: { service: "MRI - Shoulder" },
     operator: { name: "Williams, Sarah" },
     bookingReference: "532",
@@ -108,13 +108,13 @@ const mockBookings = [
       birthDate: "1980-03-15T00:00:00.000Z",
       Healthcard: "ontario-1234567890-CD",
     },
-    startTimeStamp: "2025-05-29T14:15:00Z",
-    endTimeStamp: "2025-05-29T14:45:00Z",
+    startTimeStamp: "2025-06-12T14:15:00Z",
+    endTimeStamp: "2025-06-12T14:45:00Z",
     service: { service: "Ultrasound - Abdomen" },
     operator: { name: "Garcia, Carlos" },
     bookingReference: "124",
   },
-  // May 30 (Friday)
+  // June 13, 2025 (Friday)
   {
     id: 553,
     roomId: 1,
@@ -131,8 +131,8 @@ const mockBookings = [
       birthDate: "1995-09-06T00:00:00.000Z",
       Healthcard: "ontario-8547961250-AB",
     },
-    startTimeStamp: "2025-05-30T11:00:00Z",
-    endTimeStamp: "2025-05-30T11:30:00Z",
+    startTimeStamp: "2025-06-13T11:00:00Z",
+    endTimeStamp: "2025-06-13T11:30:00Z",
     service: { service: "CT Scan - Head" },
     operator: { name: "Thompson, Lisa" },
     bookingReference: "533",
@@ -153,13 +153,13 @@ const mockBookings = [
       birthDate: "1975-11-22T00:00:00.000Z",
       Healthcard: "ontario-9876543210-EF",
     },
-    startTimeStamp: "2025-05-30T16:00:00Z",
-    endTimeStamp: "2025-05-30T16:30:00Z",
+    startTimeStamp: "2025-06-13T16:00:00Z",
+    endTimeStamp: "2025-06-13T16:30:00Z",
     service: { service: "X-Ray - Ankle" },
     operator: { name: "Brown, David" },
     bookingReference: "125",
   },
-  // May 31 (Saturday)
+  // June 14, 2025 (Saturday)
   {
     id: 555,
     roomId: 2,
@@ -176,13 +176,13 @@ const mockBookings = [
       birthDate: "1975-11-22T00:00:00.000Z",
       Healthcard: "ontario-9876543210-EF",
     },
-    startTimeStamp: "2025-05-31T10:30:00Z",
-    endTimeStamp: "2025-05-31T11:00:00Z",
+    startTimeStamp: "2025-06-14T10:30:00Z",
+    endTimeStamp: "2025-06-14T11:00:00Z",
     service: { service: "Mammogram" },
     operator: { name: "Wilson, Emma" },
     bookingReference: "126",
   },
-  // June 1 (Sunday)
+  // June 15, 2025 (Sunday)
   {
     id: 556,
     roomId: 3,
@@ -199,13 +199,13 @@ const mockBookings = [
       birthDate: "1988-07-14T00:00:00.000Z",
       Healthcard: "ontario-5551234567-GH",
     },
-    startTimeStamp: "2025-06-01T13:45:00Z",
-    endTimeStamp: "2025-06-01T14:15:00Z",
+    startTimeStamp: "2025-06-15T13:45:00Z",
+    endTimeStamp: "2025-06-15T14:15:00Z",
     service: { service: "Bone Density Scan" },
     operator: { name: "Miller, James" },
     bookingReference: "127",
   },
-  // June 2 (Monday)
+  // June 16, 2025 (Monday)
   {
     id: 557,
     roomId: 1,
@@ -222,8 +222,8 @@ const mockBookings = [
       birthDate: "1988-07-14T00:00:00.000Z",
       Healthcard: "ontario-5551234567-GH",
     },
-    startTimeStamp: "2025-06-02T09:00:00Z",
-    endTimeStamp: "2025-06-02T09:30:00Z",
+    startTimeStamp: "2025-06-16T09:00:00Z",
+    endTimeStamp: "2025-06-16T09:30:00Z",
     service: { service: "MRI - Knee" },
     operator: { name: "Davis, Robert" },
     bookingReference: "128",
@@ -244,11 +244,57 @@ const mockBookings = [
       birthDate: "1980-03-15T00:00:00.000Z",
       Healthcard: "ontario-1234567890-CD",
     },
-    startTimeStamp: "2025-06-02T15:30:00Z",
-    endTimeStamp: "2025-06-02T16:00:00Z",
+    startTimeStamp: "2025-06-16T15:30:00Z",
+    endTimeStamp: "2025-06-16T16:00:00Z",
     service: { service: "Ultrasound - Thyroid" },
     operator: { name: "Martinez, Ana" },
     bookingReference: "129",
+  },
+  // June 17, 2025 (Tuesday)
+  {
+    id: 559,
+    roomId: 1,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Michael",
+      lastName: "Johnson",
+      phoneNumber: "+14169876543",
+      birthDate: "1975-11-22T00:00:00.000Z",
+      Healthcard: "ontario-9876543210-EF",
+    },
+    startTimeStamp: "2025-06-17T12:00:00Z",
+    endTimeStamp: "2025-06-17T12:30:00Z",
+    service: { service: "Echocardiogram" },
+    operator: { name: "Anderson, Kelly" },
+    bookingReference: "130",
+  },
+  // June 18, 2025 (Wednesday)
+  {
+    id: 560,
+    roomId: 3,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics North",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Sarah",
+      lastName: "Williams",
+      phoneNumber: "+14165551234",
+      birthDate: "1988-07-14T00:00:00.000Z",
+      Healthcard: "ontario-5551234567-GH",
+    },
+    startTimeStamp: "2025-06-18T08:30:00Z",
+    endTimeStamp: "2025-06-18T09:00:00Z",
+    service: { service: "Blood Work" },
+    operator: { name: "Taylor, Michael" },
+    bookingReference: "131",
   },
 ]
 
