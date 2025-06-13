@@ -1,8 +1,110 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+// Current time is 11:33:25 AM on June 11, 2025
+// We need to add appointments that are:
+// 1. In the past (before 11:33 AM)
+// 2. Within 30 mins of current time (11:33 AM - 12:03 PM)
+// 3. More than 30 mins in the future (after 12:03 PM)
+
 // Mock booking data with fixed dates
 const mockBookings = [
-  // Today's bookings (June 11, 2025)
+  // TODAY'S BOOKINGS (June 11, 2025)
+
+  // PAST APPOINTMENTS (before 11:33 AM)
+  {
+    id: 550,
+    roomId: 2,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics North",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "John",
+      lastName: "Smith",
+      phoneNumber: "+14161234567",
+      birthDate: "1980-03-15T00:00:00.000Z",
+      Healthcard: "ontario-1234567890-CD",
+    },
+    startTimeStamp: "2025-06-11T10:00:00Z",
+    endTimeStamp: "2025-06-11T10:29:00Z",
+    service: { service: "Chest X-Ray" },
+    operator: { name: "Johnson, Bob" },
+    bookingReference: "123",
+  },
+  // Another past appointment
+  {
+    id: 561,
+    roomId: 3,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Jane",
+      lastName: "Doe",
+      phoneNumber: "+14587458796",
+      birthDate: "1995-09-06T00:00:00.000Z",
+      Healthcard: "ontario-8547961250-AB",
+    },
+    startTimeStamp: "2025-06-11T09:15:00Z",
+    endTimeStamp: "2025-06-11T09:45:00Z",
+    service: { service: "Blood Test" },
+    operator: { name: "Chen, Lucy" },
+    bookingReference: "132",
+  },
+
+  // CURRENT APPOINTMENTS (within 30 mins of 11:33 AM)
+  {
+    id: 562,
+    roomId: 1,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics Downtown",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "Jane",
+      lastName: "Doe",
+      phoneNumber: "+14587458796",
+      birthDate: "1995-09-06T00:00:00.000Z",
+      Healthcard: "ontario-8547961250-AB",
+    },
+    startTimeStamp: "2025-06-11T11:45:00Z",
+    endTimeStamp: "2025-06-11T12:15:00Z",
+    service: { service: "Wrist X-Ray (L)" },
+    operator: { name: "Patel, Raj" },
+    bookingReference: "133",
+  },
+  // Another current appointment
+  {
+    id: 563,
+    roomId: 4,
+    room: {
+      clinic: {
+        name: "Wosler Diagnostics East",
+        nexusNumber: "8547965896",
+      },
+    },
+    patient: {
+      firstName: "John",
+      lastName: "Smith",
+      phoneNumber: "+14161234567",
+      birthDate: "1980-03-15T00:00:00.000Z",
+      Healthcard: "ontario-1234567890-CD",
+    },
+    startTimeStamp: "2025-06-11T12:00:00Z",
+    endTimeStamp: "2025-06-11T12:30:00Z",
+    service: { service: "ECG" },
+    operator: { name: "Williams, Sarah" },
+    bookingReference: "134",
+  },
+
+  // FUTURE APPOINTMENTS (more than 30 mins after 11:33 AM)
   {
     id: 548,
     roomId: 1,
@@ -47,28 +149,8 @@ const mockBookings = [
     operator: { name: "Smith, Mary" },
     bookingReference: "531",
   },
-  {
-    id: 550,
-    roomId: 2,
-    room: {
-      clinic: {
-        name: "Wosler Diagnostics North",
-        nexusNumber: "8547965896",
-      },
-    },
-    patient: {
-      firstName: "John",
-      lastName: "Smith",
-      phoneNumber: "+14161234567",
-      birthDate: "1980-03-15T00:00:00.000Z",
-      Healthcard: "ontario-1234567890-CD",
-    },
-    startTimeStamp: "2025-06-11T10:00:00Z",
-    endTimeStamp: "2025-06-11T10:29:00Z",
-    service: { service: "Chest X-Ray" },
-    operator: { name: "Johnson, Bob" },
-    bookingReference: "123",
-  },
+
+  // APPOINTMENTS ON OTHER DAYS
   // Tomorrow (June 12, 2025)
   {
     id: 551,
