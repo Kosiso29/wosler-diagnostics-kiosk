@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useIdleTimer } from "@/hooks/use-idle-timer"
-import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, AlertCircle } from "lucide-react"
+import { Modal } from "@/components/modal"
 
 interface Booking {
   id: number
@@ -24,9 +25,14 @@ interface Booking {
   bookingReference: string
 }
 
+type AppointmentStatus = "past" | "current" | "future" | "valid"
+
 export default function BookingList() {
   const router = useRouter()
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalTitle, setModalTitle] = useState("")
+  const [modalMessage, setModalMessage] = useState("")
 
   useIdleTimer(() => {
     router.push("/")
@@ -36,7 +42,8 @@ export default function BookingList() {
     const storedBookings = sessionStorage.getItem("bookings")
     if (storedBookings) {
       const allBookings = JSON.parse(storedBookings)
-      // Filter for today's bookings and sort by time
+
+      // Filter for today's bookings only
       const today = new Date().toISOString().split("T")[0]
       const todaysBookings = allBookings
         .filter((booking: Booking) => booking.startTimeStamp.startsWith(today))
@@ -56,23 +63,54 @@ export default function BookingList() {
     })
   }
 
-  const formatDate = (timestamp: string) => {
-    return new Date(timestamp).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
+  const getAppointmentStatus = (booking: Booking): AppointmentStatus => {
+    const now = new Date()
+    const appointmentTime = new Date(booking.startTimeStamp)
+    const timeDiff = appointmentTime.getTime() - now.getTime()
+    const minutesDiff = timeDiff / (1000 * 60)
+
+    // Past appointment (start time has passed)
+    if (minutesDiff < 0) {
+      return "past"
+    }
+
+    // Future appointment (more than 30 minutes away)
+    if (minutesDiff > 30) {
+      return "future"
+    }
+
+    // Current appointment (within 30 minutes)
+    return "valid"
   }
 
   const handleSelectBooking = (booking: Booking) => {
+    const status = getAppointmentStatus(booking)
+
+    if (status === "past") {
+      setModalTitle("Appointment Has Passed")
+      setModalMessage(
+        "This appointment has passed. If you are still looking to get this service, please contact 999999999.",
+      )
+      setModalOpen(true)
+      return
+    }
+
+    if (status === "future") {
+      setModalTitle("Early Check-in")
+      setModalMessage(
+        "We cannot check in later than 30 mins from the scheduled time. Kindly check in within 30 mins of the appointment.",
+      )
+      setModalOpen(true)
+      return
+    }
+
+    // Valid appointment - proceed with check-in
     sessionStorage.setItem("selectedBooking", JSON.stringify(booking))
     router.push(`/check-in/verify/${booking.id}`)
   }
 
-  const handleCheckInAll = () => {
-    // For multiple bookings, we'll check them in one by one
-    router.push("/check-in/check-in-all")
+  const closeModal = () => {
+    setModalOpen(false)
   }
 
   return (
@@ -103,79 +141,77 @@ export default function BookingList() {
           </Card>
         ) : (
           <div className="space-y-6">
-            {bookings.length > 1 && (
-              <div className="text-center">
-                <Button
-                  size="lg"
-                  onClick={handleCheckInAll}
-                  className="h-16 text-xl font-semibold px-8"
-                  style={{ backgroundColor: "#9469E9" }}
-                >
-                  Check In for All Appointments
-                </Button>
-              </div>
-            )}
+            <div className="overflow-x-auto pb-4">
+              <div className="flex space-x-4 min-w-max">
+                {bookings.map((booking) => {
+                  const status = getAppointmentStatus(booking)
+                  const isPast = status === "past"
+                  const isFuture = status === "future"
+                  const isDisabled = isPast || isFuture
 
-            <div className="grid gap-4">
-              {bookings.map((booking) => (
-                <Card
-                  key={booking.id}
-                  className="p-6 border-0 shadow-xl cursor-pointer hover:scale-105 transition-transform"
-                  style={{ backgroundColor: "#343941" }}
-                  onClick={() => handleSelectBooking(booking)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-4 flex-1">
-                      <div className="flex items-center space-x-4">
-                        <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center"
-                          style={{ backgroundColor: "#9469E9" }}
-                        >
-                          <Calendar className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-2xl font-bold text-white">{booking.service.service}</h3>
-                          <p className="text-lg" style={{ color: "#C9CCD1" }}>
-                            Ref: {booking.bookingReference}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-lg">
-                        <div className="flex items-center space-x-2">
-                          <Clock className="w-5 h-5" style={{ color: "#C9CCD1" }} />
-                          <span style={{ color: "#C9CCD1" }}>
-                            {formatTime(booking.startTimeStamp)} - {formatTime(booking.endTimeStamp)}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <MapPin className="w-5 h-5" style={{ color: "#C9CCD1" }} />
-                          <span style={{ color: "#C9CCD1" }}>{booking.room.clinic.name}</span>
-                        </div>
-
-                        <div style={{ color: "#C9CCD1" }}>Operator: {booking.operator.name}</div>
-                      </div>
-                    </div>
-
-                    <Button
-                      size="lg"
-                      className="h-12 text-lg font-semibold"
-                      style={{ backgroundColor: "#9469E9" }}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleSelectBooking(booking)
-                      }}
+                  return (
+                    <Card
+                      key={booking.id}
+                      className={`p-6 border-0 shadow-xl min-w-[300px] max-w-[300px] ${
+                        isDisabled ? "opacity-70" : "hover:scale-105 transition-transform cursor-pointer"
+                      }`}
+                      style={{ backgroundColor: "#343941" }}
+                      onClick={() => !isDisabled && handleSelectBooking(booking)}
                     >
-                      Check In
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-4">
+                          <div
+                            className="w-12 h-12 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: isDisabled ? "#6B7280" : "#9469E9" }}
+                          >
+                            {isPast ? (
+                              <AlertCircle className="w-6 h-6 text-white" />
+                            ) : (
+                              <Calendar className="w-6 h-6 text-white" />
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">{booking.service.service}</h3>
+                            <p className="text-sm" style={{ color: "#C9CCD1" }}>
+                              Ref: {booking.bookingReference}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <Clock className="w-4 h-4" style={{ color: "#C9CCD1" }} />
+                            <span style={{ color: "#C9CCD1" }}>{formatTime(booking.startTimeStamp)}</span>
+                          </div>
+
+                          <div style={{ color: "#C9CCD1" }}>Operator: {booking.operator.name}</div>
+                        </div>
+
+                        <Button
+                          size="sm"
+                          className={`w-full h-10 text-base font-semibold ${
+                            isDisabled ? "bg-gray-500 cursor-not-allowed" : ""
+                          }`}
+                          style={{ backgroundColor: isDisabled ? "#6B7280" : "#9469E9" }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleSelectBooking(booking)
+                          }}
+                          disabled={isDisabled}
+                        >
+                          {isPast ? "Missed" : isFuture ? "Too Early" : "Check In"}
+                        </Button>
+                      </div>
+                    </Card>
+                  )
+                })}
+              </div>
             </div>
           </div>
         )}
       </div>
+
+      <Modal isOpen={modalOpen} onClose={closeModal} title={modalTitle} message={modalMessage} autoCloseTime={10} />
     </div>
   )
 }
